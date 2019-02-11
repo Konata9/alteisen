@@ -13,19 +13,24 @@ export default class DragSelection extends Component {
   }
 
   componentDidMount() {
-    window.document.addEventListener("mousedown", this.onMouseDown);
+    this.dragSelectionWrapper =
+      document.getElementById("dragSelectionWrapper") || window.document;
+    this.dragSelectionWrapper.addEventListener("mousedown", this.onMouseDown);
   }
 
   componentWillUnmount() {
     clearTimeout(this.mousedownTimer);
-    window.document.removeEventListener("mousedown", this.onMouseDown);
+    this.dragSelectionWrapper.removeEventListener(
+      "mousedown",
+      this.onMouseDown
+    );
   }
 
   render() {
     const { dragSelectionStyle } = this.state;
 
     return (
-      <div className="canvas">
+      <div className="canvas" id="dragSelectionWrapper">
         Drag canvas
         <div className="drag-selection-wrapper" style={dragSelectionStyle} />
       </div>
@@ -33,7 +38,6 @@ export default class DragSelection extends Component {
   }
 
   onMouseDown = (e) => {
-    console.log(e);
     e.preventDefault();
     clearTimeout(this.mousedownTimer);
 
@@ -41,10 +45,14 @@ export default class DragSelection extends Component {
       return;
     }
 
-    this.mousedownTimer = setTimeout(() => {
-      window.document.addEventListener("mousemove", this.onMouseMove);
-      window.document.addEventListener("mouseup", this.onMouseUp);
+    this.dragSelectionWrapper.addEventListener("mousemove", this.onMouseMove);
+    this.dragSelectionWrapper.addEventListener("mouseup", this.onMouseUp);
 
+    this.setState({
+      dragSelectionStyle: {}
+    });
+
+    this.mousedownTimer = setTimeout(() => {
       this.onDragging = true;
       this.setState({
         mouseStartPos: {
@@ -52,7 +60,6 @@ export default class DragSelection extends Component {
           y: e.clientY
         }
       });
-      console.log(this.onDragging);
     }, 300);
   };
 
@@ -93,11 +100,13 @@ export default class DragSelection extends Component {
   onMouseUp = (e) => {
     e.preventDefault();
 
-    this.onDragging = false;
-    console.log(this.state.onDragging);
-
     clearTimeout(this.mousedownTimer);
-    window.document.removeEventListener("mousemove", this.onMouseMove);
-    window.document.removeEventListener("mouseup", this.onMouseUp);
+    this.dragSelectionWrapper.removeEventListener(
+      "mousemove",
+      this.onMouseMove
+    );
+    this.dragSelectionWrapper.removeEventListener("mouseup", this.onMouseUp);
+
+    this.onDragging = false;
   };
 }
