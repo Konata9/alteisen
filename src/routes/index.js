@@ -8,13 +8,15 @@ import App from "./../containers/app";
 const Home = lazyLoad(() => import("./../components/Home"));
 const Hello = lazyLoad(() => import("./../components/Hello"));
 const Display = lazyLoad(() => import("./../containers/Display"));
-const DragSelection = lazyLoad(() => import("./../containers/DragSelection"));
+const Canvas = lazyLoad(() => import("./../components/Canvas"));
+const EditItem = lazyLoad(() => import("./../components/EditItem"));
 
 const Root = () => {
   return (
     <Switch>
       <Route path="/display" component={Display} />
-      <Route path="/drag" component={DragSelection} />
+      <Route path="/canvas" component={Canvas} />
+      <Route path="/edit" component={EditItem} />
       <Route
         path="/"
         render={() => {
