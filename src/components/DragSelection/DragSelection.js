@@ -18,8 +18,15 @@ export default function dragSelectionWrapper(opts = defaultOpts) {
     return class DragSelection extends Component {
       constructor(props) {
         super(props);
+        this.dragSelectionWrapper = null;
+        this.targets = null;
+        this.canvasRange = {};
         this.mouseStartPos = {};
+        this.mouseEndPos = {};
+        this.mouseDragRange = {};
+        this.onDragging = false;
         this.selectedList = [];
+
         this.state = {
           canvasStyle: options.canvasStyle,
           dragSelectionStyle: {}
@@ -70,7 +77,8 @@ export default function dragSelectionWrapper(opts = defaultOpts) {
           <div
             className="drag-selection-canvas"
             id="dragSelectionCanvas"
-            style={canvasStyle}>
+            style={canvasStyle}
+          >
             <WrappedComponent
               {...this.props}
               selectTargets={() => this.selectedList}
@@ -205,9 +213,9 @@ export default function dragSelectionWrapper(opts = defaultOpts) {
 
         const drageRange = {
           left: dragSelectionPos.left,
-          right: dragSelectionPos.left + mouseDragRange.width,
+          right: Math.round(dragSelectionPos.left + mouseDragRange.width),
           top: dragSelectionPos.top,
-          bottom: dragSelectionPos.top + mouseDragRange.height
+          bottom: Math.round(dragSelectionPos.top + mouseDragRange.height)
         };
 
         return (
