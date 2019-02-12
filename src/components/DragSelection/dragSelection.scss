@@ -1,13 +1,13 @@
-#dragSelectionWrapper {
+.drag-selection-canvas {
   width: 500px;
   height: 500px;
-  background: gainsboro;
+  background: #dedee4;
   position: absolute;
 }
 
 .drag-selection-wrapper {
-  display: none;
-  position: absolute;
   border: 1px solid #298df8;
   background: rgba(41, 141, 248, 0.15);
+  position: absolute;
+  display: none;
 }

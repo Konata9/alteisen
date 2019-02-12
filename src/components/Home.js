@@ -6,7 +6,6 @@ export default class Home extends Component {
     return (
       <div>
         <h2>Here is the Home.</h2>
-        <Link to="/hello">To helo</Link>
       </div>
     );
   }

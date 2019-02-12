@@ -15,18 +15,7 @@ export default class App extends Component {
         <nav>
           <ul className="link-list">
             <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/hello">To Hello</Link>
-            </li>
-            <li>
-              <Link to="/display">To Display</Link>
-            </li>
-            <li>
-              <Link to="/display" target="_blank">
-                To Dis
-              </Link>
+              <Link to="/canvas">JS 框选功能</Link>
             </li>
           </ul>
         </nav>

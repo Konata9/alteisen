@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import dragSelectionWrapper from "./../containers/DragSelection";
+import dragSelectionWrapper from "./DragSelection/DragSelection";
 
 const wrapperOptions = {
-  captureTarget: ".select-item",
+  targets: ".select-item",
   canvasStyle: {
     width: `800px`,
     height: `800px`
@@ -11,14 +11,16 @@ const wrapperOptions = {
 
 @dragSelectionWrapper(wrapperOptions)
 export default class Canvas extends Component {
-  render() {
+  componentDidUpdate() {
     const { selectTargets } = this.props;
-    console.log(selectTargets());
+    console.log("update", selectTargets());
+  }
 
+  render() {
     return (
-      <div>
+      <div style={{ width: "200px" }}>
         <p>Selection item</p>
-        <ul style={{ width: "200px" }}>
+        <ul>
           <li className="select-item">Item 1</li>
           <li className="select-item">Item 2</li>
           <li className="select-item">Item 3</li>
