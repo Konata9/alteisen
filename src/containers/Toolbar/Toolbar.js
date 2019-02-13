@@ -3,6 +3,6 @@ import "./toolbar.scss";
 
 export default class Toolbar extends Component {
   render() {
-    return <div className="toolbar-wrapper">This is toolbar.</div>;
+    return <div className="toolbar-wrapper">2</div>;
   }
 }

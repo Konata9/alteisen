@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import "./infobar.scss";
 
 export default class Infobar extends Component {
   render() {
-    return <div>This is Infobar.</div>;
+    return <div className="infobar-wrapper">This is Infobar.</div>;
   }
 }

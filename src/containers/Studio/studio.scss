@@ -1,0 +1,10 @@
+.studio-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  .workspace-layout {
+    height: calc(100vh - 57px);
+    display: flex;
+  }
+}

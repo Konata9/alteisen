@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import "./workspace.scss";
 
 export default class Workspace extends Component {
   render() {
-    return <div>This is Workspace</div>;
+    return <div className="workspace-wrapper">3</div>;
   }
 }

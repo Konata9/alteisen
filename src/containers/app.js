@@ -15,7 +15,7 @@ export default class App extends Component {
         <nav>
           <ul className="link-list">
             <li>
-              <Link to="/canvas">JS 框选功能</Link>
+              <Link to="/studio">JS 框选功能</Link>
             </li>
           </ul>
         </nav>

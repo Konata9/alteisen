@@ -5,13 +5,13 @@ import lazyLoad from "./LazyLoad";
 
 import App from "./../containers/app";
 
-const Canvas = lazyLoad(() => import("./../containers/Canvas"));
+const Studio = lazyLoad(() => import("./../containers/Studio/Studio"));
 
 const Root = () => {
   return (
     <Switch>
       <Route path="/" exact component={App} />
-      <Route path="/canvas" exact component={Canvas} />
+      <Route path="/studio" exact component={Studio} />
     </Switch>
   );
 };
