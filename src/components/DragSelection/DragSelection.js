@@ -79,10 +79,7 @@ export default function dragSelectionWrapper(opts = defaultOpts) {
             id="dragSelectionCanvas"
             style={canvasStyle}
           >
-            <WrappedComponent
-              {...this.props}
-              selectTargets={() => this.selectedList}
-            />
+            <WrappedComponent {...this.props} selectTargets={this.onSelect} />
             <div
               className="drag-selection-wrapper"
               style={dragSelectionStyle}
@@ -200,6 +197,8 @@ export default function dragSelectionWrapper(opts = defaultOpts) {
           });
         }
       };
+
+      onSelect = () => this.selectedList;
 
       checkTargetInRange = (target) => {
         const { dragSelectionPos, mouseDragRange } = this;
