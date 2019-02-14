@@ -1,17 +1,10 @@
 import React, { Component } from "react";
 import "./dragableItem.scss";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { dropItem } from "../../stores/global/actions";
 
-@connect(
-  (state) => ({
-    global: state.global
-  }),
-  (dispatch) => ({
-    dropItem: bindActionCreators(dropItem, dispatch)
-  })
-)
+@connect((state) => ({
+  global: state.global
+}))
 class DropEnhancer extends Component {
   constructor(props) {
     super(props);

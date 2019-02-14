@@ -1,20 +1,25 @@
 import * as Types from "../actionTypes";
 
 const initState = {
-  draggingItem: [],
-  selectedItem: null,
+  dragItem: null,
+  shapeList: [],
   topLayer: 100,
   selectedList: []
 };
 
 export default function common(state = initState, action) {
-  const { type, draggingItem } = action;
+  const { type, dragItem, shapeList } = action;
 
   switch (type) {
-    case Types.DROP_ITEM:
+    case Types.SET_DRAG_ITEM:
       return {
         ...state,
-        draggingItem
+        dragItem
+      };
+    case Types.APPEND_SHAPELIST:
+      return {
+        ...state,
+        shapeList
       };
     default:
       return state;

@@ -1,3 +1,3 @@
 // GLOBAL TYPES
-export const DROP_ITEM = "DROP_ITEM";
-export const DRAG_SELECTION = "DRAG_SELECTION";
+export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
+export const APPEND_SHAPELIST = "APPEND_SHAPLIST";

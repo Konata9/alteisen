@@ -9,13 +9,8 @@ import dropTarget from "../../components/DragableItem/DropTarget";
 @dropTarget()
 export default class Workspace extends Component {
   render() {
-    const { global } = this.props;
-    console.log(global.draggingItem);
+    console.log(global.dragItem);
 
-    return (
-      <div className="workspace-wrapper">
-        {global.draggingItem.map((item) => item)}
-      </div>
-    );
+    return <div className="workspace-wrapper" />;
   }
 }

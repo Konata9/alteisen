@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { dropItem } from "../../stores/global/actions";
+import { setDragItem } from "../../stores/global/actions";
 import { bindActionCreators } from "redux";
-
-const defaultOpts = {};
 
 @connect(
   (state) => ({ global: state.global }),
-  (dispatch) => ({ dropItem: bindActionCreators(dropItem, dispatch) })
+  (dispatch) => ({ setDragItem: bindActionCreators(setDragItem, dispatch) })
 )
 class DragEnhancer extends Component {
   constructor(props) {
@@ -36,26 +34,40 @@ class DragEnhancer extends Component {
   }
 
   onDragStart = (e) => {
-    const { dropItem } = this.props;
-    console.log(this);
-    dropItem([this]);
     e.target.style.opacity = 0.5;
-    console.log("start");
-    console.log(e.dataTransfer);
   };
 
   onDragEnd = (e) => {
+    console.log("drag end");
+    console.log(e);
+    const { type, setDragItem } = this.props;
     e.target.style.opacity = "";
-    console.log("end");
+
+    const dragItem = {
+      type: type,
+      dropPos: {
+        x: e.clientX,
+        y: e.clientY
+      }
+    };
+
+    setDragItem(dragItem);
   };
 }
 
+const defaultOpts = {};
+
 export default function dragTarget(opts = defaultOpts) {
+  const options = {
+    ...defaultOpts,
+    ...opts
+  };
+
   return (WrappedComponent) => {
     return class DragTarget extends Component {
       render() {
         return (
-          <DragEnhancer {...opts}>
+          <DragEnhancer {...options}>
             <WrappedComponent {...this.props} />
           </DragEnhancer>
         );

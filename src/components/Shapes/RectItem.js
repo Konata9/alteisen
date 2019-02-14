@@ -3,7 +3,9 @@ import "./rectItem.scss";
 
 import dragTarget from "../DragableItem/DragTarget";
 
-@dragTarget()
+@dragTarget({
+  type: "Rect"
+})
 export default class RectItem extends Component {
   render() {
     const { type } = this.props;
