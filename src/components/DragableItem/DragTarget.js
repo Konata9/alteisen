@@ -38,8 +38,6 @@ class DragEnhancer extends Component {
   };
 
   onDragEnd = (e) => {
-    console.log("drag end");
-    console.log(e);
     const { type, setDragItem } = this.props;
     e.target.style.opacity = "";
 
