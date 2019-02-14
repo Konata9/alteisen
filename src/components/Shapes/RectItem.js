@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./rectItem.scss";
 
-import dragTarget from "../DragableItem/DargTarget";
+import dragTarget from "../DragableItem/DragTarget";
 
 @dragTarget()
 export default class RectItem extends Component {
