@@ -1,7 +1,65 @@
 import React, { Component } from "react";
 import "./dragableItem.scss";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { dropItem } from "../../stores/global/actions";
 
-const defaultOpts = {};
+@connect(
+  (state) => ({
+    global: state.global
+  }),
+  (dispatch) => ({
+    dropItem: bindActionCreators(dropItem, dispatch)
+  })
+)
+class DropEnhancer extends Component {
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
+  componentDidMount() {
+    const domEle = this.ref.current;
+    domEle.addEventListener("dragenter", this.onDragEnter);
+    domEle.addEventListener("dragover", this.onDragOver);
+    domEle.addEventListener("drop", this.onDrop);
+  }
+
+  componentWillUnmount() {
+    const domEle = this.ref.current;
+    domEle.removeEventListener("dragenter", this.onDragEnter);
+    domEle.removeEventListener("dragover", this.onDragOver);
+    domEle.removeEventListener("drop", this.onDrop);
+  }
+
+  render() {
+    return (
+      <div ref={this.ref} className="drop-target-wrapper">
+        {this.props.children}
+      </div>
+    );
+  }
+
+  onDragEnter = (e) => {
+    e.preventDefault();
+    console.log("drag enter");
+    console.log(e.dataTransfer);
+    return false;
+  };
+
+  onDragOver = (e) => {
+    e.preventDefault();
+    return false;
+  };
+
+  onDrop = (e) => {
+    e.preventDefault();
+  };
+}
+
+const defaultOpts = {
+  copy: false
+};
 
 export default function dropTarget(opts = defaultOpts) {
   const options = {
@@ -10,51 +68,14 @@ export default function dropTarget(opts = defaultOpts) {
   };
 
   return (WrappedComponent) => {
-    return class DropTarget extends Component {
-      constructor(props) {
-        super(props);
-        this.ref = React.createRef();
-      }
-
-      componentDidMount() {
-        const domEle = this.ref.current;
-        domEle.addEventListener("dragenter", this.onDragEnter);
-        domEle.addEventListener("dragover", this.onDragOver);
-        domEle.addEventListener("drop", this.onDrop);
-      }
-
-      componentWillUnmount() {
-        const domEle = this.ref.current;
-        domEle.removeEventListener("dragenter", this.onDragEnter);
-        domEle.removeEventListener("dragover", this.onDragOver);
-        domEle.removeEventListener("drop", this.onDrop);
-      }
-
+    return class DropWrapper extends Component {
       render() {
         return (
-          <div ref={this.ref} className="drop-target-wrapper">
+          <DropEnhancer {...options}>
             <WrappedComponent {...this.props} />
-          </div>
+          </DropEnhancer>
         );
       }
-
-      onDragEnter = (e) => {
-        e.preventDefault();
-        console.log("drag enter");
-        console.log(e.dataTransfer);
-        return false;
-      };
-
-      onDragOver = (e) => {
-        e.preventDefault();
-        return false;
-      };
-
-      onDrop = (e) => {
-        e.preventDefault();
-        console.log("ondrop");
-        console.log(e.dataTransfer);
-      };
     };
   };
 }

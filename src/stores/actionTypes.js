@@ -1,1 +1,3 @@
-// COMMON TYPES
+// GLOBAL TYPES
+export const DROP_ITEM = "DROP_ITEM";
+export const DRAG_SELECTION = "DRAG_SELECTION";
