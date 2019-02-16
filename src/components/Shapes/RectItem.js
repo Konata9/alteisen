@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import "./rectItem.scss";
+import "./shape.scss";
 
 import dragTarget from "../DragableItem/DragTarget";
 
 @dragTarget({
-  type: "Rect"
+  shape: "Rect"
 })
 export default class RectItem extends Component {
   render() {
-    const { type } = this.props;
-    return <div className={`rect-item ${type === "icon" ? "icon" : ""}`} />;
+    return (
+      <div className="shape rect-item"/>
+    );
   }
 }

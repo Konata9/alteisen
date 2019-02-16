@@ -1,14 +1,20 @@
 import React, { Component } from "react";
 
+import RectItem from "./RectItem";
+
+const shapeItem = {
+  Rect: RectItem
+};
+
 export default class CopyShape extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { type } = this.props;
-    const ShapeItem = `${type}Item`;
+    const { shape, position } = this.props;
+    const CopyItem = shapeItem[shape];
 
-    return <ShapeItem {...this.props} />;
+    return <CopyItem {...this.props} />;
   }
 }

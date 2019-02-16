@@ -1,22 +1,28 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { setDragItem } from "../../stores/global/actions";
-import { bindActionCreators } from "redux";
+import "./dragableItem.scss";
+import { dataTransferEncode } from "../../utils";
 
-@connect(
-  (state) => ({ global: state.global }),
-  (dispatch) => ({ setDragItem: bindActionCreators(setDragItem, dispatch) })
-)
-class DragEnhancer extends Component {
+class DragTargetWrapper extends Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
+    this.state = {
+      eleStyle: {}
+    };
   }
 
   componentDidMount() {
+    const { position = {} } = this.props;
     const domEle = this.ref.current;
     domEle.addEventListener("dragstart", this.onDragStart);
     domEle.addEventListener("dragend", this.onDragEnd);
+
+    this.setState({
+      eleStyle: {
+        left: `${position.left}px`,
+        top: `${position.top}px`
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -26,34 +32,47 @@ class DragEnhancer extends Component {
   }
 
   render() {
+    const { icon } = this.props;
+    const { eleStyle } = this.state;
+
     return (
-      <div ref={this.ref} draggable={true} className="drag-target-wrapper">
+      <div
+        className={`drag-target-wrapper ${icon ? "icon" : ""}`}
+        ref={this.ref}
+        draggable={true}
+        style={eleStyle}
+      >
         {this.props.children}
       </div>
     );
   }
 
   onDragStart = (e) => {
-    e.target.style.opacity = 0.5;
+    const { options: { shape }, action } = this.props;
+
+    this.setState({
+      eleStyle: {
+        ...this.state.eleStyle,
+        opacity: 0.5
+      }
+    });
+    console.log(e.target.cloneNode(true));
+    dataTransferEncode(e, { shape, action });
   };
 
   onDragEnd = (e) => {
-    const { type, setDragItem } = this.props;
-    e.target.style.opacity = "";
-
-    const dragItem = {
-      type: type,
-      dropPos: {
-        x: e.clientX,
-        y: e.clientY
+    this.setState({
+      eleStyle: {
+        ...this.state.eleStyle,
+        opacity: 1
       }
-    };
-
-    setDragItem(dragItem);
+    });
   };
 }
 
-const defaultOpts = {};
+const defaultOpts = {
+  shape: null
+};
 
 export default function dragTarget(opts = defaultOpts) {
   const options = {
@@ -62,12 +81,12 @@ export default function dragTarget(opts = defaultOpts) {
   };
 
   return (WrappedComponent) => {
-    return class DragTarget extends Component {
+    return class DragComponent extends Component {
       render() {
         return (
-          <DragEnhancer {...options}>
+          <DragTargetWrapper options={options} {...this.props}>
             <WrappedComponent {...this.props} />
-          </DragEnhancer>
+          </DragTargetWrapper>
         );
       }
     };

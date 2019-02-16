@@ -1,14 +1,26 @@
 import React, { Component } from "react";
 import "./dragableItem.scss";
 import { connect } from "react-redux";
+import { setDragItem } from "../../stores/global/actions";
+import { bindActionCreators } from "redux";
 
-@connect((state) => ({
-  global: state.global
-}))
+import { dataTransferDecode } from "../../utils";
+
+@connect(
+  (state) => ({
+    global: state.global
+  }),
+  (dispatch) => ({
+    setDragItem: bindActionCreators(setDragItem, dispatch)
+  })
+)
 class DropEnhancer extends Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
+    this.state = {
+      eleStyle: {}
+    };
   }
 
   componentDidMount() {
@@ -26,8 +38,9 @@ class DropEnhancer extends Component {
   }
 
   render() {
+    const { eleStyle } = this.state;
     return (
-      <div ref={this.ref} className="drop-target-wrapper">
+      <div className="drop-target-wrapper" ref={this.ref} style={eleStyle}>
         {this.props.children}
       </div>
     );
@@ -35,8 +48,6 @@ class DropEnhancer extends Component {
 
   onDragEnter = (e) => {
     e.preventDefault();
-    console.log("drag enter");
-    console.log(e.dataTransfer);
     return false;
   };
 
@@ -47,12 +58,21 @@ class DropEnhancer extends Component {
 
   onDrop = (e) => {
     e.preventDefault();
+    const { setDragItem } = this.props;
+    const [shape, action] = dataTransferDecode(e, ["shape", "action"]);
+
+    setDragItem({
+      shape,
+      action,
+      position: {
+        left: Math.round(e.clientX - e.target.offsetLeft),
+        top: Math.round(e.clientY - e.target.offsetTop)
+      }
+    });
   };
 }
 
-const defaultOpts = {
-  copy: false
-};
+const defaultOpts = {};
 
 export default function dropTarget(opts = defaultOpts) {
   const options = {
@@ -64,7 +84,7 @@ export default function dropTarget(opts = defaultOpts) {
     return class DropWrapper extends Component {
       render() {
         return (
-          <DropEnhancer {...options}>
+          <DropEnhancer options={options} {...this.props}>
             <WrappedComponent {...this.props} />
           </DropEnhancer>
         );

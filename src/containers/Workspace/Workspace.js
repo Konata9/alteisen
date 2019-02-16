@@ -10,14 +10,13 @@ import CopyShape from "../../components/Shapes/CopyShape";
 @dropTarget()
 export default class Workspace extends Component {
   render() {
-    const {
-      global: { shapeList }
-    } = this.props;
+    const { global: { itemList } } = this.props;
+    console.log(this.props)
 
     return (
       <div className="workspace-wrapper">
-        {shapeList.map((shape, index) => (
-          <CopyShape key={index} type={shape.type} />
+        {itemList.map((item, index) => (
+          <CopyShape key={index} {...item} />
         ))}
       </div>
     );

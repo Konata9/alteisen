@@ -2,13 +2,13 @@ import * as Types from "../actionTypes";
 
 const initState = {
   dragItem: null,
-  shapeList: [],
+  itemList: [],
   topLayer: 100,
   selectedList: []
 };
 
 export default function common(state = initState, action) {
-  const { type, dragItem, shapeList } = action;
+  const { type, dragItem, itemList } = action;
 
   switch (type) {
     case Types.SET_DRAG_ITEM:
@@ -19,7 +19,7 @@ export default function common(state = initState, action) {
     case Types.APPEND_SHAPELIST:
       return {
         ...state,
-        shapeList
+        itemList
       };
     default:
       return state;

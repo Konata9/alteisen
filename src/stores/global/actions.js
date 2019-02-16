@@ -1,8 +1,13 @@
 import store from "./../index";
 import * as Types from "../actionTypes";
+import { DRAG_ACTION } from "../../constants";
 
 export const setDragItem = (dragItem) => {
-  store.dispatch(appendShapeList(dragItem));
+  const { action } = dragItem;
+  if(action === DRAG_ACTION.COPY) {
+    store.dispatch(appendShapeList(dragItem));
+  }
+
   return {
     type: Types.SET_DRAG_ITEM,
     dragItem
@@ -11,11 +16,11 @@ export const setDragItem = (dragItem) => {
 
 export const appendShapeList = (dragItem) => {
   const {
-    global: { shapeList }
+    global: { itemList }
   } = store.getState("global");
-  console.log(shapeList);
+
   return {
     type: Types.APPEND_SHAPELIST,
-    shapeList: [...shapeList, dragItem]
+    itemList: [...itemList, dragItem]
   };
 };
