@@ -12,7 +12,7 @@ export default class CopyShape extends Component {
   }
 
   render() {
-    const { shape, position } = this.props;
+    const { shape } = this.props;
     const CopyItem = shapeItem[shape];
 
     return <CopyItem {...this.props} />;

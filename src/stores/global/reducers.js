@@ -10,12 +10,13 @@ const initState = {
 export default function common(state = initState, action) {
   const { type, dragItem, itemList } = action;
 
-  switch (type) {
+  switch(type) {
     case Types.SET_DRAG_ITEM:
       return {
         ...state,
         dragItem
       };
+    case Types.UPDEATE_ITEMLIST:
     case Types.APPEND_SHAPELIST:
       return {
         ...state,

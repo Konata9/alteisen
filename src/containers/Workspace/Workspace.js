@@ -11,7 +11,7 @@ import CopyShape from "../../components/Shapes/CopyShape";
 export default class Workspace extends Component {
   render() {
     const { global: { itemList } } = this.props;
-    console.log(this.props)
+    console.log(itemList);
 
     return (
       <div className="workspace-wrapper">

@@ -8,8 +8,9 @@ import dragTarget from "../DragableItem/DragTarget";
 })
 export default class RectItem extends Component {
   render() {
+    const { style } = this.props;
     return (
-      <div className="shape rect-item"/>
+      <div className="shape rect-item" style={style}/>
     );
   }
 }

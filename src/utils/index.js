@@ -8,3 +8,5 @@ export const dataTransferEncode = (e, data) => {
 };
 
 export const dataTransferDecode = (e, keys) => keys.map(key => JSON.parse(e.dataTransfer.getData(key)));
+
+export const generatorShapeId = (shape, id) => `${shape}-${id}`;

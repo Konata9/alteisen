@@ -14,7 +14,7 @@ import { dataTransferDecode } from "../../utils";
     setDragItem: bindActionCreators(setDragItem, dispatch)
   })
 )
-class DropEnhancer extends Component {
+class DropTargetWrapper extends Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
@@ -59,9 +59,10 @@ class DropEnhancer extends Component {
   onDrop = (e) => {
     e.preventDefault();
     const { setDragItem } = this.props;
-    const [shape, action] = dataTransferDecode(e, ["shape", "action"]);
+    const [id, shape, action] = dataTransferDecode(e, ["id", "shape", "action"]);
 
     setDragItem({
+      id,
       shape,
       action,
       position: {
@@ -84,9 +85,9 @@ export default function dropTarget(opts = defaultOpts) {
     return class DropWrapper extends Component {
       render() {
         return (
-          <DropEnhancer options={options} {...this.props}>
+          <DropTargetWrapper options={options}>
             <WrappedComponent {...this.props} />
-          </DropEnhancer>
+          </DropTargetWrapper>
         );
       }
     };

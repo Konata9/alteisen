@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./dragableItem.scss";
-import { dataTransferEncode } from "../../utils";
+import { dataTransferEncode, generatorShapeId } from "../../utils";
+import { DRAG_ACTION } from "../../constants";
 
 class DragTargetWrapper extends Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class DragTargetWrapper extends Component {
   }
 
   onDragStart = (e) => {
-    const { options: { shape }, action } = this.props;
+    const { options: { shape }, action, id = null } = this.props;
 
     this.setState({
       eleStyle: {
@@ -56,8 +57,7 @@ class DragTargetWrapper extends Component {
         opacity: 0.5
       }
     });
-    console.log(e.target.cloneNode(true));
-    dataTransferEncode(e, { shape, action });
+    dataTransferEncode(e, { id, shape, action });
   };
 
   onDragEnd = (e) => {
