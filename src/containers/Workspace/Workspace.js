@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./workspace.scss";
 import { connect } from "react-redux";
 import dropTarget from "../../components/DragableItem/DropTarget";
-import CopyShape from "../../components/Shapes/CopyShape";
+import EditableShape from "../../components/Shapes/EditableShape.js";
 
 @connect((state) => ({
   global: state.global
@@ -10,13 +10,12 @@ import CopyShape from "../../components/Shapes/CopyShape";
 @dropTarget()
 export default class Workspace extends Component {
   render() {
-    const { global: { itemList } } = this.props;
-    console.log(itemList);
+    const { global: { shapeList } } = this.props;
 
     return (
       <div className="workspace-wrapper">
-        {itemList.map((item, index) => (
-          <CopyShape key={index} {...item} />
+        {shapeList.map((item, index) => (
+          <EditableShape key={index} {...item} />
         ))}
       </div>
     );

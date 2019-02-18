@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./dragableItem.scss";
-import { dataTransferEncode, generatorShapeId } from "../../utils";
-import { DRAG_ACTION } from "../../constants";
+import { dataTransferEncode, generatorShapeId, getMousePos } from "../../utils";
 
 class DragTargetWrapper extends Component {
   constructor(props) {
@@ -13,17 +12,9 @@ class DragTargetWrapper extends Component {
   }
 
   componentDidMount() {
-    const { position = {} } = this.props;
     const domEle = this.ref.current;
     domEle.addEventListener("dragstart", this.onDragStart);
     domEle.addEventListener("dragend", this.onDragEnd);
-
-    this.setState({
-      eleStyle: {
-        left: `${position.left}px`,
-        top: `${position.top}px`
-      }
-    });
   }
 
   componentWillUnmount() {
@@ -33,12 +24,11 @@ class DragTargetWrapper extends Component {
   }
 
   render() {
-    const { icon } = this.props;
     const { eleStyle } = this.state;
 
     return (
       <div
-        className={`drag-target-wrapper ${icon ? "icon" : ""}`}
+        className="drag-target-wrapper"
         ref={this.ref}
         draggable={true}
         style={eleStyle}
@@ -49,15 +39,17 @@ class DragTargetWrapper extends Component {
   }
 
   onDragStart = (e) => {
-    const { options: { shape }, action, id = null } = this.props;
+    const { shape } = this.props;
+    const id = generatorShapeId(shape);
 
     this.setState({
       eleStyle: {
         ...this.state.eleStyle,
-        opacity: 0.5
+        opacity: 0.3
       }
     });
-    dataTransferEncode(e, { id, shape, action });
+
+    dataTransferEncode(e, { id, shape });
   };
 
   onDragEnd = (e) => {
@@ -70,21 +62,13 @@ class DragTargetWrapper extends Component {
   };
 }
 
-const defaultOpts = {
-  shape: null
-};
-
-export default function dragTarget(opts = defaultOpts) {
-  const options = {
-    ...defaultOpts,
-    ...opts
-  };
+export default function dragTarget() {
 
   return (WrappedComponent) => {
-    return class DragComponent extends Component {
+    return class DragTarget extends Component {
       render() {
         return (
-          <DragTargetWrapper options={options} {...this.props}>
+          <DragTargetWrapper {...this.props}>
             <WrappedComponent {...this.props} />
           </DragTargetWrapper>
         );

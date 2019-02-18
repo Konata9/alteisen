@@ -2,13 +2,14 @@ import * as Types from "../actionTypes";
 
 const initState = {
   dragItem: null,
-  itemList: [],
+  selectedItem: null,
+  shapeList: [],
   topLayer: 100,
   selectedList: []
 };
 
 export default function common(state = initState, action) {
-  const { type, dragItem, itemList } = action;
+  const { type, dragItem, shapeList } = action;
 
   switch(type) {
     case Types.SET_DRAG_ITEM:
@@ -16,11 +17,11 @@ export default function common(state = initState, action) {
         ...state,
         dragItem
       };
-    case Types.UPDEATE_ITEMLIST:
-    case Types.APPEND_SHAPELIST:
+    case Types.APPEND_SHAPE_LIST:
+    case Types.UPDATE_SHAPE_LIST:
       return {
         ...state,
-        itemList
+        shapeList
       };
     default:
       return state;

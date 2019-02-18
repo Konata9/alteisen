@@ -1,5 +1,8 @@
 .drag-target-wrapper {
-  position: absolute;
+}
+
+.drag-target-wrapper:hover{
+  cursor: grab;
 }
 
 .drop-target-wrapper {
@@ -7,10 +10,3 @@
   height: 100%;
 }
 
-.icon {
-
-}
-
-.icon:hover {
-  cursor: grab;
-}

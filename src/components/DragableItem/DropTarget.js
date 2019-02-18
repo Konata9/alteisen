@@ -18,9 +18,6 @@ class DropTargetWrapper extends Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
-    this.state = {
-      eleStyle: {}
-    };
   }
 
   componentDidMount() {
@@ -38,9 +35,8 @@ class DropTargetWrapper extends Component {
   }
 
   render() {
-    const { eleStyle } = this.state;
     return (
-      <div className="drop-target-wrapper" ref={this.ref} style={eleStyle}>
+      <div className="drop-target-wrapper" ref={this.ref}>
         {this.props.children}
       </div>
     );
@@ -58,34 +54,28 @@ class DropTargetWrapper extends Component {
 
   onDrop = (e) => {
     e.preventDefault();
+
     const { setDragItem } = this.props;
-    const [id, shape, action] = dataTransferDecode(e, ["id", "shape", "action"]);
+    const [id, shape] = dataTransferDecode(e, ["id", "shape"]);
 
     setDragItem({
       id,
       shape,
-      action,
       position: {
-        left: Math.round(e.clientX - e.target.offsetLeft),
-        top: Math.round(e.clientY - e.target.offsetTop)
+        left: e.offsetX,
+        top: e.offsetY
       }
     });
   };
 }
 
-const defaultOpts = {};
-
-export default function dropTarget(opts = defaultOpts) {
-  const options = {
-    ...defaultOpts,
-    ...opts
-  };
+export default function dropTarget() {
 
   return (WrappedComponent) => {
-    return class DropWrapper extends Component {
+    return class DropTarget extends Component {
       render() {
         return (
-          <DropTargetWrapper options={options}>
+          <DropTargetWrapper {...this.props}>
             <WrappedComponent {...this.props} />
           </DropTargetWrapper>
         );
