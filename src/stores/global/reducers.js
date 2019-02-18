@@ -4,14 +4,15 @@ const initState = {
   dragItem: null,
   selectedItem: null,
   shapeList: [],
+  assistLineList: [],
   topLayer: 100,
   selectedList: []
 };
 
 export default function common(state = initState, action) {
-  const { type, dragItem, shapeList } = action;
+  const { type, dragItem, shapeList, assistLineList } = action;
 
-  switch(type) {
+  switch (type) {
     case Types.SET_DRAG_ITEM:
       return {
         ...state,
@@ -22,6 +23,11 @@ export default function common(state = initState, action) {
       return {
         ...state,
         shapeList
+      };
+    case Types.APPEND_ASSIST_LINE_LIST:
+      return {
+        ...state,
+        assistLineList
       };
     default:
       return state;

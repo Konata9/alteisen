@@ -32,3 +32,16 @@
   border-radius: 100%;
   background: cornflowerblue;
 }
+
+.assist-line {
+  border-bottom: 1px dashed indianred;
+  position: absolute;
+}
+
+.assist-line-horizon {
+  width: 100%;
+}
+
+.assist-line-vertical {
+  height: 100%;
+}

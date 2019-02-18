@@ -24,5 +24,12 @@ export const updateShapeList = (shapeList) => {
   return {
     type: Types.UPDATE_SHAPE_LIST,
     shapeList
-  }
+  };
+};
+
+export const assistLineList = (assistLineList) => {
+  return {
+    type: Types.APPEND_ASSIST_LINE_LIST,
+    assistLineList
+  };
 };

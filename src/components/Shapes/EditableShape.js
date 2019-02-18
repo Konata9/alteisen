@@ -93,11 +93,16 @@ export default class EditableShape extends Component {
     const ele = this.ref.current;
     ele.removeEventListener("mousemove", this.onMouseMove);
 
-    const { currentPos, isMoving } = this.state;
+    const { isMoving } = this.state;
     if (!isMoving) {
       return;
     }
 
+    this.updateShapeList();
+  };
+
+  updateShapeList = () => {
+    const { currentPos } = this.state;
     const { updateShapeList, id, global: { shapeList } } = this.props;
     const updatedList = shapeList.map(shape => {
       if (shape.id === id) {
