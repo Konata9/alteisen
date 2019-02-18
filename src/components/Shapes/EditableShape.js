@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux/es/redux";
-import { updateShapeList } from "../../stores/global/actions";
+import { updateShapeList, appendAssistLineList, clearAssistLineList } from "../../stores/global/actions";
 
 import Rect from "./BaseShape/Rect.js";
 import Circle from "./BaseShape/Circle.js";
+import { createAssistLine } from "../../utils";
 
 const shapeDictionary = {
   rect: Rect,
@@ -14,7 +15,9 @@ const shapeDictionary = {
 @connect(
   (state) => ({ global: state.global }),
   (dispatch) => ({
-    updateShapeList: bindActionCreators(updateShapeList, dispatch)
+    updateShapeList: bindActionCreators(updateShapeList, dispatch),
+    appendAssistLineList: bindActionCreators(appendAssistLineList, dispatch),
+    clearAssistLineList: bindActionCreators(clearAssistLineList, dispatch)
   })
 )
 export default class EditableShape extends Component {
@@ -85,6 +88,8 @@ export default class EditableShape extends Component {
         top: position.top + moveY
       },
       isMoving: true
+    }, () => {
+      this.appendAssistLineList(e.target);
     });
   };
 
@@ -94,18 +99,20 @@ export default class EditableShape extends Component {
     ele.removeEventListener("mousemove", this.onMouseMove);
 
     const { isMoving } = this.state;
-    if (!isMoving) {
+    if(!isMoving) {
       return;
     }
 
+    const { clearAssistLineList } = this.props;
     this.updateShapeList();
+    clearAssistLineList();
   };
 
   updateShapeList = () => {
     const { currentPos } = this.state;
     const { updateShapeList, id, global: { shapeList } } = this.props;
     const updatedList = shapeList.map(shape => {
-      if (shape.id === id) {
+      if(shape.id === id) {
         shape.position = {
           ...currentPos
         };
@@ -118,5 +125,17 @@ export default class EditableShape extends Component {
     this.setState({
       isMoving: false
     });
+  };
+
+  appendAssistLineList = (target) => {
+    const { appendAssistLineList } = this.props;
+    const { currentPos } = this.state;
+    const assistLineList = [
+      createAssistLine("horizon", "top", { top: currentPos.top }),
+      createAssistLine("horizon", "bottom", { top: currentPos.top + target.clientHeight }),
+      createAssistLine("vertical", "left", { left: currentPos.left }),
+      createAssistLine("vertical", "right", { left: currentPos.left + target.clientWidth })
+    ];
+    appendAssistLineList(assistLineList);
   };
 }

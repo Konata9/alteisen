@@ -34,7 +34,6 @@
 }
 
 .assist-line {
-  border-bottom: 1px dashed indianred;
   position: absolute;
 }
 
@@ -44,4 +43,20 @@
 
 .assist-line-vertical {
   height: 100%;
+}
+
+.assist-line-top {
+  border-top: 1px dashed indianred;
+}
+
+.assist-line-left {
+  border-left: 1px dashed indianred;
+}
+
+.assist-line-right {
+  border-right: 1px dashed indianred;
+}
+
+.assist-line-bottom {
+  border-bottom: 1px dashed indianred;
 }

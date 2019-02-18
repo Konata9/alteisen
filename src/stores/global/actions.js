@@ -27,9 +27,16 @@ export const updateShapeList = (shapeList) => {
   };
 };
 
-export const assistLineList = (assistLineList) => {
+export const appendAssistLineList = (assistLineList) => {
   return {
     type: Types.APPEND_ASSIST_LINE_LIST,
     assistLineList
+  };
+};
+
+export const clearAssistLineList = () => {
+  return {
+    type: Types.CLEAR_ASSIST_LINE_LIST,
+    assistLineList: []
   };
 };
