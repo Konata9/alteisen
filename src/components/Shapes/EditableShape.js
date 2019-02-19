@@ -11,6 +11,7 @@ import {
 } from "../../stores/global/actions";
 import ResizableShape from "./ResizableShape.js";
 import { createAssistLine } from "../../utils";
+import { MOVABLE_ITEMS } from "../../constants";
 
 @connect(
   (state) => ({ global: state.global }),
@@ -67,6 +68,7 @@ export default class EditableShape extends Component {
   onMouseDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
     this.setState({
       mousePos: {
         x: e.clientX,
@@ -82,6 +84,14 @@ export default class EditableShape extends Component {
   onMouseMove = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    console.log("shape");
+
+    const dataShape = e.target.dataset.shape;
+    if (!MOVABLE_ITEMS.includes(dataShape)) {
+      return;
+    }
+
     const { mousePos } = this.state;
     const { style: { left, top } } = this.props;
     const [moveX, moveY] = [e.clientX - mousePos.x, e.clientY - mousePos.y];

@@ -12,5 +12,6 @@ export const DEFAULT_STYLE = {
 };
 
 export const DOT_DIRECTIONS = ["top", "top-left", "top-right", "left", "bottom-left", "bottom", "bottom-right", "right", "rotate"];
+export const MOVABLE_ITEMS = ["shape"];
 
 export const COMPARE_RANGE = 10;

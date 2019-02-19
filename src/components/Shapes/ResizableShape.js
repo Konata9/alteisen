@@ -25,7 +25,7 @@ export default class ResizableShape extends Component {
     const { global: { selectedItem }, id } = this.props;
 
     return (
-      <div className={`resizable-wrapper`} ref={this.ref}>
+      <div className={`resizable-wrapper`} ref={this.ref} data-shape="shape">
         {this.props.children}
         {
           selectedItem.id === id && (
