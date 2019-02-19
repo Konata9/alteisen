@@ -1,8 +1,8 @@
 import * as Types from "../actionTypes";
 
 const initState = {
-  dragItem: null,
-  selectedItem: null,
+  dragItem: {},
+  selectedItem: {},
   shapeList: [],
   assistLineList: [],
   topLayer: 100,
@@ -10,16 +10,23 @@ const initState = {
 };
 
 export default function common(state = initState, action) {
-  const { type, dragItem, shapeList, assistLineList } = action;
+  const { type, dragItem, selectedItem, shapeList, assistLineList } = action;
 
-  switch(type) {
+  switch (type) {
     case Types.SET_DRAG_ITEM:
       return {
         ...state,
         dragItem
       };
+    case Types.SET_SELECTED_ITEM:
+    case Types.CLEAR_SELECTED_ITEM:
+      return {
+        ...state,
+        selectedItem
+      };
     case Types.APPEND_SHAPE_LIST:
     case Types.UPDATE_SHAPE_LIST:
+    case Types.CLEAR_RESIZABLE_BORDER:
       return {
         ...state,
         shapeList

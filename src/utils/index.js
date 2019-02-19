@@ -1,7 +1,7 @@
 // drag & drop event utils
 export const dataTransferEncode = (e, data) => {
-  for(const key in data) {
-    if(data.hasOwnProperty(key)) {
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
       e.dataTransfer.setData(key, JSON.stringify(data[key]));
     }
   }
@@ -12,8 +12,7 @@ export const dataTransferDecode = (e, keys) =>
 
 export const generatorShapeId = (shape) => `${shape}-${+new Date()}`;
 
-export const createAssistLine = (type, direction, position) => ({
+export const createAssistLine = (type, position) => ({
   type: type,
-  direction: direction,
   position: position
 });

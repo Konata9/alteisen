@@ -1,23 +1,26 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux/es/redux";
-import { updateShapeList, appendAssistLineList, clearAssistLineList } from "../../stores/global/actions";
-
-import Rect from "./BaseShape/Rect.js";
-import Circle from "./BaseShape/Circle.js";
+import {
+  updateShapeList,
+  setSelectedItem,
+  clearSelectedItem,
+  appendAssistLineList,
+  clearAssistLineList,
+  clearResizableBorder
+} from "../../stores/global/actions";
+import ResizableShape from "./ResizableShape.js";
 import { createAssistLine } from "../../utils";
-
-const shapeDictionary = {
-  rect: Rect,
-  circle: Circle
-};
 
 @connect(
   (state) => ({ global: state.global }),
   (dispatch) => ({
     updateShapeList: bindActionCreators(updateShapeList, dispatch),
+    setSelectedItem: bindActionCreators(setSelectedItem, dispatch),
+    clearSelectedItem: bindActionCreators(clearSelectedItem, dispatch),
     appendAssistLineList: bindActionCreators(appendAssistLineList, dispatch),
-    clearAssistLineList: bindActionCreators(clearAssistLineList, dispatch)
+    clearAssistLineList: bindActionCreators(clearAssistLineList, dispatch),
+    clearResizableBorder: bindActionCreators(clearResizableBorder, dispatch)
   })
 )
 export default class EditableShape extends Component {
@@ -30,7 +33,6 @@ export default class EditableShape extends Component {
         y: 0
       },
       isMoving: false,
-      eleStyle: {},
       currentPos: {}
     };
   }
@@ -48,23 +50,23 @@ export default class EditableShape extends Component {
   }
 
   render() {
-    const { shape, position } = this.props;
-    const RenderComponent = shapeDictionary[shape];
-    const style = {
-      ...this.state.eleStyle,
-      ...position,
-      ...this.state.currentPos
+    const { shape, style } = this.props;
+    const { currentPos } = this.state;
+    const displayStyle = {
+      ...style,
+      ...currentPos
     };
 
     return (
-      <div className={`editable-wrapper editable-${shape}`} style={style} ref={this.ref}>
-        <RenderComponent/>
+      <div className={`editable-wrapper editable-${shape}`} style={displayStyle} ref={this.ref}>
+        <ResizableShape {...this.props}/>
       </div>
     );
   }
 
   onMouseDown = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     this.setState({
       mousePos: {
         x: e.clientX,
@@ -79,13 +81,14 @@ export default class EditableShape extends Component {
 
   onMouseMove = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const { mousePos } = this.state;
-    const { position } = this.props;
+    const { style: { left, top } } = this.props;
     const [moveX, moveY] = [e.clientX - mousePos.x, e.clientY - mousePos.y];
     this.setState({
       currentPos: {
-        left: position.left + moveX,
-        top: position.top + moveY
+        left: left + moveX,
+        top: top + moveY
       },
       isMoving: true
     }, () => {
@@ -95,32 +98,35 @@ export default class EditableShape extends Component {
 
   onMouseUp = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+
+    const { clearResizableBorder, clearSelectedItem } = this.props;
     const ele = this.ref.current;
     ele.removeEventListener("mousemove", this.onMouseMove);
 
+    clearResizableBorder();
+    clearSelectedItem();
+
     const { isMoving } = this.state;
-    if(!isMoving) {
+    if (!isMoving) {
       return;
     }
 
-    const { clearAssistLineList } = this.props;
     this.updateShapeList();
-    clearAssistLineList();
   };
 
   updateShapeList = () => {
     const { currentPos } = this.state;
-    const { updateShapeList, id, global: { shapeList } } = this.props;
-    const updatedList = shapeList.map(shape => {
-      if(shape.id === id) {
-        shape.position = {
-          ...currentPos
-        };
-      }
-      return shape;
-    });
+    const { updateShapeList, clearAssistLineList, id, global: { shapeList } } = this.props;
 
-    updateShapeList(updatedList);
+    const targetShape = shapeList.find(shape => shape.id === id);
+    targetShape.style = {
+      ...targetShape.style,
+      ...currentPos
+    };
+
+    updateShapeList(targetShape);
+    clearAssistLineList();
 
     this.setState({
       isMoving: false
@@ -131,11 +137,21 @@ export default class EditableShape extends Component {
     const { appendAssistLineList } = this.props;
     const { currentPos } = this.state;
     const assistLineList = [
-      createAssistLine("horizon", "top", { top: currentPos.top }),
-      createAssistLine("horizon", "bottom", { top: currentPos.top + target.clientHeight }),
-      createAssistLine("vertical", "left", { left: currentPos.left }),
-      createAssistLine("vertical", "right", { left: currentPos.left + target.clientWidth })
+      createAssistLine("horizon", { top: currentPos.top }),
+      createAssistLine("horizon", { top: currentPos.top + target.clientHeight }),
+      createAssistLine("vertical", { left: currentPos.left }),
+      createAssistLine("vertical", { left: currentPos.left + target.clientWidth })
     ];
     appendAssistLineList(assistLineList);
   };
+
+  // assistLineCheck = (basePos, comparePos, direction) => {
+  //   const caseSelection = {
+  //     top: () => (comparePos.top <= basePos.top && comparePos.top >= (basePos.top - COMPARE_RANGE)
+  //     ),
+  //     left: () => (comparePos.left <=)
+  //   };
+  //
+  //   return caseSelection[direction]();
+  // };
 }

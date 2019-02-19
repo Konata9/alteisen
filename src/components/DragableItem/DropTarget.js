@@ -5,6 +5,7 @@ import { setDragItem } from "../../stores/global/actions";
 import { bindActionCreators } from "redux";
 
 import { dataTransferDecode } from "../../utils";
+import { DEFAULT_STYLE } from "../../constants";
 
 @connect(
   (state) => ({
@@ -57,14 +58,16 @@ class DropTargetWrapper extends Component {
 
     const { setDragItem } = this.props;
     const [id, shape] = dataTransferDecode(e, ["id", "shape"]);
+    const style = {
+      ...DEFAULT_STYLE[shape],
+      left: e.offsetX,
+      top: e.offsetY
+    };
 
     setDragItem({
       id,
       shape,
-      position: {
-        left: e.offsetX,
-        top: e.offsetY
-      }
+      style
     });
   };
 }
