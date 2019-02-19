@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { WORKSPACE_STATES } from "../../constants";
 
 export default class ResizableDot extends Component {
   constructor(props) {
@@ -12,13 +13,13 @@ export default class ResizableDot extends Component {
   componentDidMount() {
     const ele = this.ref.current;
     ele.addEventListener("mousedown", this.onMouseDown);
-    document.addEventListener("mouseup", this.onMouseUp);
+    ele.addEventListener("mouseup", this.onMouseUp);
   }
 
   componentWillUnmount() {
     const ele = this.ref.current;
     ele.removeEventListener("mousedown", this.onMouseDown);
-    document.removeEventListener("mouseup", this.onMouseUp);
+    ele.removeEventListener("mouseup", this.onMouseUp);
   }
 
   render() {
@@ -29,7 +30,8 @@ export default class ResizableDot extends Component {
   }
 
   onMouseDown = (e) => {
-    const ele = this.ref.current;
+    e.preventDefault();
+    e.stopPropagation();
     this.setState({
       mousePos: {
         x: e.clientX,
@@ -37,14 +39,29 @@ export default class ResizableDot extends Component {
       }
     });
 
+    console.log("dot down");
+
+    const ele = this.ref.current;
+    const { setWorkspaceState } = this.props;
+    setWorkspaceState(WORKSPACE_STATES.IN_RESIZING);
+
     ele.addEventListener("mousemove", this.onMouseMove);
   };
 
   onMouseMove = (e) => {
-    console.log("dot", e.target);
-    const { direction, global: { selectedItem }, updateShapeList } = this.props;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { direction, global: { selectedItem, workspaceState }, updateShapeList } = this.props;
     const { mousePos } = this.state;
-    if (direction === "right") {
+
+    if(workspaceState !== WORKSPACE_STATES.IN_RESIZING) {
+      return;
+    }
+
+    console.log("dot move");
+
+    if(direction === "right") {
       const diffX = e.clientX - mousePos.x;
       selectedItem.style = {
         ...selectedItem.style,
@@ -63,7 +80,14 @@ export default class ResizableDot extends Component {
   };
 
   onMouseUp = (e) => {
-    const ele = this.ref.current;
+    // e.preventDefault();
+    // e.stopPropagation();
+
+    console.log("dot up");
+
+    const { clearWorkspaceState } = this.props;
+    clearWorkspaceState();
+
     ele.removeEventListener("mousemove", this.onMouseMove);
   };
 }

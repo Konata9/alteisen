@@ -7,11 +7,13 @@ import {
   clearSelectedItem,
   appendAssistLineList,
   clearAssistLineList,
-  clearResizableBorder
+  clearResizableBorder,
+  setWorkspaceState,
+  clearWorkspaceState
 } from "../../stores/global/actions";
 import ResizableShape from "./ResizableShape.js";
 import { createAssistLine } from "../../utils";
-import { MOVABLE_ITEMS } from "../../constants";
+import { WORKSPACE_STATES } from "../../constants";
 
 @connect(
   (state) => ({ global: state.global }),
@@ -21,7 +23,9 @@ import { MOVABLE_ITEMS } from "../../constants";
     clearSelectedItem: bindActionCreators(clearSelectedItem, dispatch),
     appendAssistLineList: bindActionCreators(appendAssistLineList, dispatch),
     clearAssistLineList: bindActionCreators(clearAssistLineList, dispatch),
-    clearResizableBorder: bindActionCreators(clearResizableBorder, dispatch)
+    clearResizableBorder: bindActionCreators(clearResizableBorder, dispatch),
+    setWorkspaceState: bindActionCreators(setWorkspaceState, dispatch),
+    clearWorkspaceState: bindActionCreators(clearWorkspaceState, dispatch)
   })
 )
 export default class EditableShape extends Component {
@@ -33,7 +37,6 @@ export default class EditableShape extends Component {
         x: 0,
         y: 0
       },
-      isMoving: false,
       currentPos: {}
     };
   }
@@ -73,9 +76,11 @@ export default class EditableShape extends Component {
       mousePos: {
         x: e.clientX,
         y: e.clientY
-      },
-      isMoving: false
+      }
     });
+
+    const { setWorkspaceState } = this.props;
+    setWorkspaceState(WORKSPACE_STATES.IN_MOVING);
 
     const ele = this.ref.current;
     ele.addEventListener("mousemove", this.onMouseMove);
@@ -85,22 +90,19 @@ export default class EditableShape extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("shape");
+    const { mousePos } = this.state;
+    const { style: { left, top }, global: { workspaceState } } = this.props;
 
-    const dataShape = e.target.dataset.shape;
-    if (!MOVABLE_ITEMS.includes(dataShape)) {
+    if(workspaceState !== WORKSPACE_STATES.IN_MOVING) {
       return;
     }
 
-    const { mousePos } = this.state;
-    const { style: { left, top } } = this.props;
     const [moveX, moveY] = [e.clientX - mousePos.x, e.clientY - mousePos.y];
     this.setState({
       currentPos: {
         left: left + moveX,
         top: top + moveY
-      },
-      isMoving: true
+      }
     }, () => {
       this.appendAssistLineList(e.target);
     });
@@ -110,15 +112,18 @@ export default class EditableShape extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    const { clearResizableBorder, clearSelectedItem } = this.props;
+    console.log("edit up");
+
+    const { global: { workspaceState, selectedItem }, clearResizableBorder, clearSelectedItem } = this.props;
     const ele = this.ref.current;
     ele.removeEventListener("mousemove", this.onMouseMove);
 
-    clearResizableBorder();
-    clearSelectedItem();
+    if(selectedItem) {
+      clearResizableBorder();
+      clearSelectedItem();
+    }
 
-    const { isMoving } = this.state;
-    if (!isMoving) {
+    if(workspaceState !== WORKSPACE_STATES.IN_MOVING) {
       return;
     }
 
@@ -127,7 +132,7 @@ export default class EditableShape extends Component {
 
   updateShapeList = () => {
     const { currentPos } = this.state;
-    const { updateShapeList, clearAssistLineList, id, global: { shapeList } } = this.props;
+    const { updateShapeList, clearAssistLineList, clearWorkspaceState, id, global: { shapeList } } = this.props;
 
     const targetShape = shapeList.find(shape => shape.id === id);
     targetShape.style = {
@@ -137,10 +142,7 @@ export default class EditableShape extends Component {
 
     updateShapeList(targetShape);
     clearAssistLineList();
-
-    this.setState({
-      isMoving: false
-    });
+    clearWorkspaceState();
   };
 
   appendAssistLineList = (target) => {

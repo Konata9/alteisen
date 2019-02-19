@@ -1,8 +1,9 @@
 import * as Types from "../actionTypes";
 
 const initState = {
-  dragItem: {},
-  selectedItem: {},
+  workspaceState: null,
+  dragItem: null,
+  selectedItem: null,
   shapeList: [],
   assistLineList: [],
   topLayer: 100,
@@ -10,9 +11,9 @@ const initState = {
 };
 
 export default function common(state = initState, action) {
-  const { type, dragItem, selectedItem, shapeList, assistLineList } = action;
+  const { type, workspaceState, dragItem, selectedItem, shapeList, assistLineList } = action;
 
-  switch (type) {
+  switch(type) {
     case Types.SET_DRAG_ITEM:
       return {
         ...state,
@@ -36,6 +37,12 @@ export default function common(state = initState, action) {
       return {
         ...state,
         assistLineList
+      };
+    case Types.SET_WORKSPACE_STATE:
+    case Types.CLEAR_WORKSPACE_STATE:
+      return {
+        ...state,
+        workspaceState
       };
     default:
       return state;

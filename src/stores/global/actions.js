@@ -21,7 +21,7 @@ export const setSelectedItem = (selectedItem) => {
 export const clearSelectedItem = () => {
   return {
     type: Types.CLEAR_SELECTED_ITEM,
-    selectedItem: {}
+    selectedItem: null
   };
 };
 
@@ -38,7 +38,7 @@ export const appendShapeList = (dragItem) => {
 export const updateShapeList = (dragItem) => {
   const { global: { shapeList } } = store.getState("global");
   const updatedList = shapeList.map((shape) => {
-    if (shape.id === dragItem.id) {
+    if(shape.id === dragItem.id) {
       shape = dragItem;
     }
     return shape;
@@ -77,9 +77,16 @@ export const clearResizableBorder = () => {
   };
 };
 
-export const switchSelectedState = (state) => {
+export const setWorkspaceState = (workspaceState) => {
   return {
-    type: Types.SWITCH_SELECTED_STATE,
-    hasSelected: state
+    type: Types.SET_WORKSPACE_STATE,
+    workspaceState
+  };
+};
+
+export const clearWorkspaceState = () => {
+  return {
+    type: Types.CLEAR_WORKSPACE_STATE,
+    workspaceState: null
   };
 };

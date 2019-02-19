@@ -28,7 +28,7 @@ export default class ResizableShape extends Component {
       <div className={`resizable-wrapper`} ref={this.ref} data-shape="shape">
         {this.props.children}
         {
-          selectedItem.id === id && (
+          selectedItem && selectedItem.id === id && (
             DOT_DIRECTIONS.map((direction, index) => <ResizableDot key={index} direction={direction} {...this.props}/>)
           )
         }
@@ -39,6 +39,8 @@ export default class ResizableShape extends Component {
   onClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    console.log("resize click");
 
     const { global: { shapeList }, id, updateShapeList, setSelectedItem } = this.props;
     const targetShape = shapeList.find((shape) => shape.id === id);
