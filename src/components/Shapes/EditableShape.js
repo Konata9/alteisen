@@ -4,10 +4,8 @@ import { bindActionCreators } from "redux/es/redux";
 import {
   updateShapeList,
   setSelectedItem,
-  clearSelectedItem,
   appendAssistLineList,
   clearAssistLineList,
-  clearResizableBorder,
   setWorkspaceState,
   clearWorkspaceState
 } from "../../stores/global/actions";
@@ -20,10 +18,8 @@ import { WORKSPACE_STATES } from "../../constants";
   (dispatch) => ({
     updateShapeList: bindActionCreators(updateShapeList, dispatch),
     setSelectedItem: bindActionCreators(setSelectedItem, dispatch),
-    clearSelectedItem: bindActionCreators(clearSelectedItem, dispatch),
     appendAssistLineList: bindActionCreators(appendAssistLineList, dispatch),
     clearAssistLineList: bindActionCreators(clearAssistLineList, dispatch),
-    clearResizableBorder: bindActionCreators(clearResizableBorder, dispatch),
     setWorkspaceState: bindActionCreators(setWorkspaceState, dispatch),
     clearWorkspaceState: bindActionCreators(clearWorkspaceState, dispatch)
   })
@@ -44,13 +40,11 @@ export default class EditableShape extends Component {
   componentDidMount() {
     const ele = this.ref.current;
     ele.addEventListener("mousedown", this.onMouseDown);
-    document.addEventListener("mouseup", this.onMouseUp);
   }
 
   componentWillUnmount() {
     const ele = this.ref.current;
     ele.removeEventListener("mousedown", this.onMouseDown);
-    document.removeEventListener("mouseup", this.onMouseUp);
   }
 
   render() {
@@ -71,7 +65,6 @@ export default class EditableShape extends Component {
   onMouseDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
-
     this.setState({
       mousePos: {
         x: e.clientX,
@@ -84,6 +77,7 @@ export default class EditableShape extends Component {
 
     const ele = this.ref.current;
     ele.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
   };
 
   onMouseMove = (e) => {
@@ -93,7 +87,7 @@ export default class EditableShape extends Component {
     const { mousePos } = this.state;
     const { style: { left, top }, global: { workspaceState } } = this.props;
 
-    if(workspaceState !== WORKSPACE_STATES.IN_MOVING) {
+    if (workspaceState !== WORKSPACE_STATES.IN_MOVING) {
       return;
     }
 
@@ -112,18 +106,12 @@ export default class EditableShape extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("edit up");
-
-    const { global: { workspaceState, selectedItem }, clearResizableBorder, clearSelectedItem } = this.props;
+    const { global: { workspaceState } } = this.props;
     const ele = this.ref.current;
     ele.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
 
-    if(selectedItem) {
-      clearResizableBorder();
-      clearSelectedItem();
-    }
-
-    if(workspaceState !== WORKSPACE_STATES.IN_MOVING) {
+    if (workspaceState !== WORKSPACE_STATES.IN_MOVING) {
       return;
     }
 
@@ -143,6 +131,10 @@ export default class EditableShape extends Component {
     updateShapeList(targetShape);
     clearAssistLineList();
     clearWorkspaceState();
+    
+    this.setState({
+      currentPos: {}
+    });
   };
 
   appendAssistLineList = (target) => {

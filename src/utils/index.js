@@ -16,3 +16,16 @@ export const createAssistLine = (type, position) => ({
   type: type,
   position: position
 });
+
+export const judgeLimit = (judge, limit, type = "small") => {
+  if (type === "small") {
+    return judge <= limit ? limit : judge;
+  } else if (type === "large") {
+    return judge >= limit ? limit : judge;
+  }
+};
+
+export const calculateAngle = (center, currentPos) => {
+  const angle = Math.atan2(currentPos.x - center.x, center.y - currentPos.y) / Math.PI * 180;
+  return angle <= -90 ? (360 + angle) : angle;
+};

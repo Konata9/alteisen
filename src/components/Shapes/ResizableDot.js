@@ -1,25 +1,26 @@
 import React, { Component } from "react";
-import { WORKSPACE_STATES } from "../../constants";
+import { LIMIT, WORKSPACE_STATES } from "../../constants";
+import { judgeLimit, calculateAngle } from "../../utils";
 
 export default class ResizableDot extends Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
     this.state = {
-      mousePos: {}
+      mousePos: {},
+      rightLimit: null,
+      bottomLimit: null
     };
   }
 
   componentDidMount() {
     const ele = this.ref.current;
     ele.addEventListener("mousedown", this.onMouseDown);
-    ele.addEventListener("mouseup", this.onMouseUp);
   }
 
   componentWillUnmount() {
     const ele = this.ref.current;
     ele.removeEventListener("mousedown", this.onMouseDown);
-    ele.removeEventListener("mouseup", this.onMouseUp);
   }
 
   render() {
@@ -32,20 +33,20 @@ export default class ResizableDot extends Component {
   onMouseDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const { setWorkspaceState, global: { selectedItem } } = this.props;
+    setWorkspaceState(WORKSPACE_STATES.IN_RESIZING);
     this.setState({
       mousePos: {
         x: e.clientX,
         y: e.clientY
-      }
+      },
+      rightLimit: selectedItem.style.left + selectedItem.style.width - LIMIT.WIDTH,
+      bottomLimit: selectedItem.style.top + selectedItem.style.height - LIMIT.HEIGHT
     });
 
-    console.log("dot down");
-
-    const ele = this.ref.current;
-    const { setWorkspaceState } = this.props;
-    setWorkspaceState(WORKSPACE_STATES.IN_RESIZING);
-
-    ele.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
   };
 
   onMouseMove = (e) => {
@@ -55,21 +56,17 @@ export default class ResizableDot extends Component {
     const { direction, global: { selectedItem, workspaceState }, updateShapeList } = this.props;
     const { mousePos } = this.state;
 
-    if(workspaceState !== WORKSPACE_STATES.IN_RESIZING) {
+    if (workspaceState !== WORKSPACE_STATES.IN_RESIZING) {
       return;
     }
 
-    console.log("dot move");
+    const currentPos = {
+      x: e.clientX,
+      y: e.clientY
+    };
 
-    if(direction === "right") {
-      const diffX = e.clientX - mousePos.x;
-      selectedItem.style = {
-        ...selectedItem.style,
-        width: selectedItem.style.width + diffX
-      };
-
-      updateShapeList(selectedItem);
-    }
+    selectedItem.style = this.resizeByDirection(direction, currentPos, mousePos, selectedItem.style);
+    updateShapeList(selectedItem);
 
     this.setState({
       mousePos: {
@@ -79,15 +76,69 @@ export default class ResizableDot extends Component {
     });
   };
 
-  onMouseUp = (e) => {
-    // e.preventDefault();
-    // e.stopPropagation();
+  resizeByDirection = (direction, currentPos, lastPos, baseStyle) => {
+    const { rightLimit, bottomLimit } = this.state;
+    const diffX = currentPos.x - lastPos.x;
+    const diffY = currentPos.y - lastPos.y;
+    const deg = calculateAngle(
+      { x: baseStyle.left + baseStyle.width / 2, y: baseStyle.top + baseStyle.height / 2 },
+      { x: currentPos.x, y: currentPos.y }
+    );
 
-    console.log("dot up");
+    const resizeStyle = {
+      top: {
+        top: judgeLimit(baseStyle.top + diffY, bottomLimit, "large"),
+        height: judgeLimit(baseStyle.height - diffY, LIMIT.HEIGHT)
+      },
+      "top-left": {
+        width: judgeLimit(baseStyle.width - diffX, LIMIT.WIDTH),
+        height: judgeLimit(baseStyle.height - diffY, LIMIT.HEIGHT),
+        left: judgeLimit(baseStyle.left + diffX, rightLimit, "large"),
+        top: judgeLimit(baseStyle.top + diffY, bottomLimit, "large")
+      },
+      "top-right": {
+        width: judgeLimit(baseStyle.width + diffX, LIMIT.WIDTH),
+        height: judgeLimit(baseStyle.height - diffY, LIMIT.HEIGHT),
+        top: judgeLimit(baseStyle.top + diffY, bottomLimit, "large")
+      },
+      left: {
+        width: judgeLimit(baseStyle.width - diffX, LIMIT.WIDTH),
+        left: judgeLimit(baseStyle.left + diffX, rightLimit, "large")
+      },
+      "bottom-left": {
+        width: judgeLimit(baseStyle.width - diffX, LIMIT.WIDTH),
+        height: judgeLimit(baseStyle.height + diffY, LIMIT.HEIGHT),
+        left: judgeLimit(baseStyle.left + diffX, rightLimit, "large")
+      },
+      bottom: {
+        height: judgeLimit(baseStyle.height + diffY, LIMIT.HEIGHT)
+      },
+      "bottom-right": {
+        width: judgeLimit(baseStyle.width + diffX, LIMIT.WIDTH),
+        height: judgeLimit(baseStyle.height + diffY, LIMIT.HEIGHT)
+      },
+      right: {
+        width: judgeLimit(baseStyle.width + diffX, LIMIT.WIDTH)
+      },
+      rotate: {
+        transform: `rotate(${deg}deg)`
+      }
+    };
+
+    return {
+      ...baseStyle,
+      ...resizeStyle[direction]
+    };
+  };
+
+  onMouseUp = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
     const { clearWorkspaceState } = this.props;
     clearWorkspaceState();
 
-    ele.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
   };
 }
