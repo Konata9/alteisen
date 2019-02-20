@@ -5,13 +5,14 @@ import dropTarget from "../../components/DragableItem/DropTarget";
 import EditableShape from "../../components/Shapes/EditableShape.js";
 import AssistLine from "../../components/Shapes/AssistLine";
 import { bindActionCreators } from "redux";
-import { clearResizableBorder, clearSelectedItem } from "../../stores/global/actions";
+import { clearResizableBorder, clearSelectedItem, clearWorkspaceState } from "../../stores/global/actions";
 
 @connect((state) => ({
   global: state.global
 }), (dispatch) => ({
   clearResizableBorder: bindActionCreators(clearResizableBorder, dispatch),
-  clearSelectedItem: bindActionCreators(clearSelectedItem, dispatch)
+  clearSelectedItem: bindActionCreators(clearSelectedItem, dispatch),
+  clearWorkspaceState: bindActionCreators(clearWorkspaceState, dispatch)
 }))
 @dropTarget()
 export default class Workspace extends Component {
@@ -50,10 +51,11 @@ export default class Workspace extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    const { clearResizableBorder, clearSelectedItem, global: { selectedItem } } = this.props;
+    const { clearResizableBorder, clearSelectedItem, clearWorkspaceState, global: { selectedItem } } = this.props;
     if (selectedItem) {
       clearResizableBorder();
       clearSelectedItem();
+      clearWorkspaceState();
     }
   };
 }

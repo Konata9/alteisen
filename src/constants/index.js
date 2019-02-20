@@ -15,7 +15,8 @@ export const DOT_DIRECTIONS = ["top", "top-left", "top-right", "left", "bottom-l
 
 export const WORKSPACE_STATES = {
   IN_MOVING: "IN_MOVING",
-  IN_RESIZING: "IN_RESIZING"
+  IN_RESIZING: "IN_RESIZING",
+  IN_EDITING: "IN_EDITING"
 };
 
 export const LIMIT = {

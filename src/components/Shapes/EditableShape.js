@@ -10,8 +10,15 @@ import {
   clearWorkspaceState
 } from "../../stores/global/actions";
 import ResizableShape from "./ResizableShape.js";
+import Rect from "./BaseShape/Rect.js";
+import Circle from "./BaseShape/Circle.js";
 import { createAssistLine } from "../../utils";
 import { WORKSPACE_STATES } from "../../constants";
+
+const baseShape = {
+  rect: Rect,
+  circle: Circle
+};
 
 @connect(
   (state) => ({ global: state.global }),
@@ -55,9 +62,13 @@ export default class EditableShape extends Component {
       ...currentPos
     };
 
+    const RenderComponent = baseShape[shape];
+
     return (
       <div className={`editable-wrapper editable-${shape}`} style={displayStyle} ref={this.ref}>
-        <ResizableShape {...this.props}/>
+        <ResizableShape {...this.props}>
+          <RenderComponent/>
+        </ResizableShape>
       </div>
     );
   }
@@ -131,7 +142,7 @@ export default class EditableShape extends Component {
     updateShapeList(targetShape);
     clearAssistLineList();
     clearWorkspaceState();
-    
+
     this.setState({
       currentPos: {}
     });
