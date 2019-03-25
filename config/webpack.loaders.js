@@ -11,6 +11,12 @@ module.exports = [
     use: [{ loader: "babel-loader" }]
   },
   {
+    test: /\.tsx?$/,
+    use: [
+      { loader: "awesome-typescript-loader" }
+    ]
+  },
+  {
     test: /\.s(a|c)ss$/,
     ...EXCLUDE_INCLUDE_MODULE,
     use: [
